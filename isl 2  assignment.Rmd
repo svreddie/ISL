@@ -1,0 +1,565 @@
+1.This exercise relates to the College data set, which can be found in the file College.csv. It contains a number of variables for 777 different universities and colleges in the US. The variables are
+
+Private: Public/private indicator
+Apps: Number of applications received
+Accept: Number of applicants accepted
+Enroll: Number of new students enrolled
+Top10perc: New students from top 10% of high school class
+Top25perc: New students from top 25% of high school class
+F.Undergrad: Number of full-time undergraduates
+P.Undergrad: Number of part-time undergraduates
+Outstate: Out-of-state tuition
+Room.Board: Room and board costs
+Books: Estimated book costs
+Personal: Estimated personal spending
+PhD: Percent of faculty with Ph.D.'s
+Terminal: Percent of faculty with terminal degree
+S.F.Ratio: Student/faculty ratio
+perc.alumni: Percent of alumni who donate
+Expend: Instructional expenditure per student
+Grad.Rate: Graduation rate
+
+
+
+
+
+
+Part A
+
+```{r}
+college = read.csv('/Users/anjan/Downloads/College.csv', header = TRUE)
+```
+
+```{r}
+head(college)
+```
+
+
+Part 2
+```{r}
+rownames(college) = college[, 1]
+head(college)
+```
+
+
+```{r}
+college = college[, -1]
+head(college)
+```
+
+part 3.1
+```{r}
+summary(college)
+```
+
+
+Part 3.2
+
+```{r}
+pairs(college[, 1:10])
+```
+
+
+Part 3.3
+```{r}
+plot(college$Private, college$Outstate, xlab = "Private", ylab = "Out-of-state tuition (dollars)")
+```
+
+
+
+part 3.4
+```{r}
+Elite = rep("No", nrow(college))
+Elite[college$Top10per>50] = "Yes"
+Elite = as.factor(Elite)
+college = data.frame(college, Elite)
+```
+
+```{r}
+Elite = rep("No", nrow(college))
+Elite[college$Top10per > 50] = "Yes"
+Elite = as.factor(Elite)
+college = data.frame(college, Elite)
+```
+
+```{r}
+summary(college$Elite)
+```
+
+
+```{r}
+plot(college$Elite, college$Outstate, xlab = "Elite", ylab = "Out-of-state tuition (dollars)")
+```
+Part 3.5
+
+```{r}
+par(mfrow=c(2,2))
+hist(college$Apps, xlab = "Applications Received", main = "")
+hist(college$perc.alumni, col=2, xlab = "% of alumni who donate", main = "")
+hist(college$S.F.Ratio, col=3, breaks=10, xlab = "Student/faculty ratio", main = "")
+hist(college$Expend, breaks=100, xlab = "Instructional expenditure per student", main = "")
+```
+```{r}
+par(mfrow=c(2,2))
+hist(college$Expend, xlab = "Applications Received", main = "")
+hist(college$perc.alumni, col=2, xlab = "% of alumni who donate", main = "")
+hist(college$S.F.Ratio, col=3, breaks=10, xlab = "Student/faculty ratio", main = "")
+hist(college$Expend, breaks=100, xlab = "Instructional expenditure per student", main = "")
+```
+```{r}
+# Some interesting observations:
+# what is the university with the most students in the top 10% of class
+row.names(college)[which.max(college$Top10perc)]  
+acceptance_rate <- college$Accept / college$Apps
+# what university has the smallest acceptance rate
+row.names(college)[which.min(acceptance_rate)]  
+# what university has the most liberal acceptance rate
+row.names(college)[which.max(acceptance_rate)]
+# High tuition correlates to high graduation rate
+plot(college$Outstate, college$Grad.Rate) 
+# Colleges with low acceptance rate tend to have low S:F ratio.
+plot(college$Accept / college$Apps, college$S.F.Ratio) 
+# Colleges with the most students from top 10% perc don't necessarily have
+# the highest graduation rate. Also, rate > 100 is erroneous!
+plot(college$Top10perc, college$Grad.Rate)
+```
+
+
+
+2.
+
+This exercise involves the Auto data set studied in the lab. Make sure that the missing values have been removed from the data.
+
+
+```{r}
+Auto = read.csv("/Users/anjan/Downloads/Auto.csv", header = TRUE, na.strings = "?")
+Auto = na.omit(Auto)
+dim(Auto)
+```
+
+Part 1
+
+
+```{r}
+head(Auto)
+```
+
+Part 2
+```{r}
+range(Auto$mpg)
+
+```
+
+```{r}
+range(Auto$cylinders)
+```
+
+```{r}
+range(Auto$displacement)
+```
+
+```{r}
+range(Auto$horsepower)
+```
+
+```{r}
+range(Auto$weight)
+range(Auto$acceleration)
+range(Auto$year)
+```
+
+Part 3 
+
+```{r}
+colMeans(Auto[, 1:7])
+```
+
+
+Part 4
+
+```{r}
+apply(Auto[, 1:7], MARGIN = 2, FUN = "sd")
+```
+```{r}
+apply(Auto[-(10:85), 1:7], MARGIN = 2, FUN = "range")
+```
+```{r}
+apply(Auto[-(10:85), 1:7], MARGIN = 2, FUN = "mean")
+
+```
+
+```{r}
+apply(Auto[-(10:85), 1:7], MARGIN = 2, FUN = "sd")
+
+```
+
+Part 5
+
+```{r}
+par(mfrow = c(2, 2))
+plot(Auto$displacement, Auto$mpg, xlab = "Engine displacement (cubic inches)", ylab = "Miles per gallon")
+plot(Auto$horsepower, Auto$mpg, xlab = "Horsepower", ylab = "Miles per gallon")
+plot(Auto$weight, Auto$mpg, xlab = "Car weight (pounds)", ylab = "Miles per gallon")
+plot(Auto$year, Auto$mpg, xlab = "Model Year", ylab = "Miles per gallon")
+```
+```{r}
+par(mfrow = c(2, 2))
+plot(Auto$year, Auto$acceleration, xlab = "Model Year", ylab = "0 to 60mph time (seconds)")
+plot(Auto$year, Auto$displacement, xlab = "Model Year", ylab = "Engine displacement (cubic inches)")
+plot(Auto$year, Auto$weight, xlab = "Model Year", ylab = "Car weight (pounds)")
+plot(Auto$year, Auto$horsepower, xlab = "Model Year", ylab = "Horsepower")
+```
+
+```{r}
+par(mfrow = c(2, 2))
+plot(Auto$weight, Auto$acceleration, xlab = "Car weight (pounds)", ylab = "0 to 60mph time (seconds)")
+plot(Auto$cylinders, Auto$acceleration, xlab = "Number of engine cylinders", ylab = "0 to 60mph time (seconds)")
+plot(Auto$displacement, Auto$acceleration, xlab = "Engine displacement (cubic inches)", ylab = "0 to 60mph time (seconds)")
+plot(Auto$horsepower, Auto$acceleration, xlab = "Horsepower", ylab = "0 to 60mph time (seconds)")
+```
+```{r}
+par(mfrow = c(2, 1))
+plot(Auto$weight, Auto$horsepower, xlab = "Car weight (pounds)", ylab = "Horsepower")
+plot(Auto$weight, Auto$displacement, xlab = "Car weight (pounds)", ylab = "Engine displacement (cubic inches)")
+```
+Part 6
+
+```{r}
+Auto$origin[Auto$origin == 1] = "American"
+Auto$origin[Auto$origin == 2] = "European"
+Auto$origin[Auto$origin == 3] = "Japanese"
+Auto$origin = as.factor(Auto$origin)
+plot(Auto$origin, Auto$mpg, xlab = "Country of origin", ylab = "Miles per gallon")
+```
+
+3.This exercise involves the Boston housing data set.
+```{r}
+library(MASS)
+```
+Part 1
+
+```{r}
+head(Boston)
+
+```
+```{r}
+?Boston
+
+```
+
+Part 2 
+
+```{r}
+dim(Boston)
+
+```
+```{r}
+attach(Boston)
+
+pairs(Boston)
+```
+```{r}
+Boston.corr = cor(Boston)
+Boston.corr.crim = Boston.corr[-1,1]
+print(
+  Boston.corr.crim[order(abs(Boston.corr.crim), decreasing = T)]
+)
+```
+Part 3 
+```{r}
+par(mfrow=c(2,2))
+# get the four most correlated variables
+aux = names(Boston.corr.crim[order(abs(Boston.corr.crim), decreasing = T)][1:4])
+for(i in aux){
+  plot(get(i), crim, xlab=i)
+}
+```
+Part 4
+```{r}
+summary(crim)
+```
+
+```{r}
+length(crim[crim>30])
+```
+
+```{r}
+hist(tax)
+```
+```{r}
+length(tax[tax>500])
+```
+
+```{r}
+hist(ptratio)
+```
+```{r}
+length(ptratio[ptratio<14])
+```
+
+```{r}
+table(chas)
+```
+
+```{r}
+median(ptratio)
+```
+
+```{r}
+subs.lw = which(medv<median(medv))
+print(subs.lw)
+```
+
+```{r}
+Boston.corr.subs.lw = cor(Boston[subs.lw, ])
+corr.compare = data.frame('lower'=Boston.corr.subs.lw[, "medv"], 'all'=Boston.corr[, "medv"])
+corr.compare$diff = corr.compare$lower - corr.compare$all
+```
+
+```{r}
+hist(corr.compare$diff, xlab="Correlation Differences")
+```
+
+```{r}
+hist(abs(corr.compare$diff), xlab="Correlation Differences")
+```
+
+```{r}
+main.diffs = head(corr.compare[order(abs(corr.compare$diff), decreasing = T), ], 5)
+
+print(main.diffs)
+```
+
+```{r}
+print(rownames(main.diffs))
+```
+
+```{r}
+hist(rm, main="Distribution of Rooms by Dwelling", xlab="Rooms")
+```
+```{r}
+length(rm[rm>7])
+```
+
+```{r}
+length(rm[rm>8])
+```
+
+```{r}
+frm =as.factor(as.character(lapply(rm, function(x) ifelse(x>8, "]8, +Inf[", ifelse(x>7,"]7,8]","[0,7]")))))
+plot(frm, medv, varwidth=T, xlab="Number of Rooms", 
+     ylab="Median Values by $1000s",
+     title="Median Value of Owner-Occupied Homes")
+
+```
+
+```{r}
+Boston[rm>8 & medv<30, ]
+```
+
+4.
+
+
+
+This question involves the use of simple linear regression on the Auto data set.
+
+
+
+```{r}
+Auto = read.csv('/Users/anjan/Downloads/Auto.csv', header = TRUE, na.strings = "?")
+Auto = na.omit(Auto)
+
+```
+```{r}
+auto.lin.fit = lm(mpg ~ horsepower, data = Auto)
+summary(auto.lin.fit)
+```
+```{r}
+predict(auto.lin.fit, data.frame(horsepower = 98), interval = "confidence")
+```
+
+
+```{r}
+predict(auto.lin.fit, data.frame(horsepower = 98), interval = "prediction")
+```
+
+```{r}
+plot(Auto$horsepower, Auto$mpg, xlab = "Horsepower", ylab = "Miles per gallon")
+abline(auto.lin.fit, lwd = 3, col = "red")
+```
+5.
+
+This question involves the use of multiple linear regression on the Auto data set.
+
+```{r}
+par(mfrow = c(2, 2))
+plot(auto.lin.fit)
+```
+```{r}
+Auto = read.csv('/Users/anjan/Downloads/Auto.csv', header = TRUE, na.strings = "?")
+Auto = na.omit(Auto)
+```
+
+```{r}
+Auto$origin[Auto$origin == 1] = "American"
+Auto$origin[Auto$origin == 2] = "European"
+Auto$origin[Auto$origin == 3] = "Japanese"
+Auto$origin = as.factor(Auto$origin)
+head(Auto)
+```
+```{r}
+pairs(~mpg + cylinders + displacement + horsepower + weight + acceleration + year, Auto)
+```
+```{r}
+cor(Auto[,-c(8, 9)])
+```
+
+```{r}
+mpg.fit = lm(mpg ~ . - name, data = Auto)
+summary(mpg.fit)
+```
+```{r}
+contrasts(Auto$origin)
+
+```
+
+```{r}
+par(mfrow = c(2, 2))
+plot(mpg.fit)
+
+```
+```{r}
+mpg.fit.all.interactions = lm(mpg ~ (. - name)^2, data = Auto)
+summary(mpg.fit.all.interactions)
+```
+```{r}
+mpg.fit.reduced.interactions = update(mpg.fit.all.interactions, ~ . - horsepower:origin)
+summary(mpg.fit.reduced.interactions)
+```
+
+```{r}
+mpg.fit.reduced.interactions = update(mpg.fit.reduced.interactions, ~ . - displacement:horsepower)
+summary(mpg.fit.reduced.interactions)
+```
+```{r}
+mpg.fit.reduced.interactions = update(mpg.fit.reduced.interactions, ~ . - weight:acceleration)
+summary(mpg.fit.reduced.interactions)
+```
+```{r}
+mpg.fit.reduced.interactions = update(mpg.fit.reduced.interactions, ~ . - cylinders:origin)
+summary(mpg.fit.reduced.interactions)
+
+```
+
+```{r}
+mpg.fit.reduced.interactions = update(mpg.fit.reduced.interactions, ~ . - cylinders:displacement)
+summary(mpg.fit.reduced.interactions)
+```
+```{r}
+mpg.fit.reduced.interactions = update(mpg.fit.reduced.interactions, ~ . - cylinders:weight)
+summary(mpg.fit.reduced.interactions)
+```
+```{r}
+summary(lm(mpg ~ . + cylinders:displacement - name, data = Auto))
+
+```
+```{r}
+par(mfrow = c(2, 2))
+plot(Auto$displacement, Auto$mpg)
+plot(Auto$horsepower, Auto$mpg)
+plot(Auto$weight, Auto$mpg)
+plot(Auto$acceleration, Auto$mpg)
+```
+```{r}
+summary(lm(mpg ~ acceleration, data = Auto))
+
+```
+```{r}
+par(mfrow = c(2, 2))
+plot(lm(mpg ~ acceleration, data = Auto))
+```
+```{r}
+summary(lm(mpg ~ log(acceleration), data = Auto))
+
+```
+```{r}
+par(mfrow = c(2, 2))
+plot(lm(mpg ~ log(acceleration), data = Auto))
+```
+```{r}
+displacement.linear = lm(mpg ~ displacement, data = Auto)
+summary(displacement.linear)
+```
+
+```{r}
+displacement.quadratic = lm(mpg ~ poly(displacement, 2), data = Auto)
+summary(displacement.quadratic)
+```
+
+```{r}
+anova(displacement.linear, displacement.quadratic)
+
+```
+```{r}
+displacement.quintic = lm(mpg ~ poly(displacement, 5), data = Auto)
+summary(displacement.quintic)
+```
+```{r}
+displacement.quintic = lm(mpg ~ poly(displacement, 5), data = Auto)
+summary(displacement.quintic)
+```
+```{r}
+anova(displacement.quadratic, displacement.quintic)
+```
+6.
+
+
+This question should be answered using the Carseats data set.
+```{r}
+library(ISLR)
+head(Carseats)
+```
+```{r}
+carseats.fit.1 = lm(Sales ~ Price + Urban + US, data = Carseats)
+summary(carseats.fit.1)
+```
+```{r}
+contrasts(Carseats$Urban)
+```
+
+```{r}
+contrasts(Carseats$US)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+carseats.fit.2 = lm(Sales ~ Price + US, data = Carseats)
+summary(carseats.fit.2)
+```
+```{r}
+par(mfrow = c(2, 2))
+plot(carseats.fit.1)
+```
+```{r}
+par(mfrow = c(2, 2))
+plot(carseats.fit.2)
+```
+
+
+
+```{r}
+confint(carseats.fit.2)
+```
+
